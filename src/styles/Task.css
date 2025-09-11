@@ -1,0 +1,12 @@
+.add-task {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #fbed54;
+    background-color: #fffef7;
+}
+
+.add-task:hover {
+    background-color: #f8f6eb;
+    cursor: pointer;
+}
