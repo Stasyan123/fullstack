@@ -1,9 +1,17 @@
+const statuses = require('../enums/status.js')
 const mongoose = require('../services/mongoDbProvider.js')
 
 const taskScheme = new mongoose.Schema({
-    title: String,
+    title: {
+        type: String,
+        required: true  
+    },
     description: String,
-    status: String,
+    status: {
+        type: String,
+        enum: statuses,
+        required: true  
+    }
 }) 
 
 taskScheme.set('toJSON', {

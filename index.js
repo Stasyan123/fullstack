@@ -68,14 +68,9 @@ app.put('/api/tasks/:id', (request, response, next) => {
         .catch(err => next(err))
 })
 
-app.post('/api/tasks', (request, response) => {
+app.post('/api/tasks', (request, response, next) => {
     const body = request.body
     
-    if (!body.title) {
-        response.statusMessage = 'Title is required!'
-        response.status(400).end()
-    }
-
     const newTask = new Task({
         title: body.title,
         description: body.description,
@@ -84,17 +79,14 @@ app.post('/api/tasks', (request, response) => {
 
     newTask.save()
         .then(task => response.json(task))
-        .catch(err => {
-            response.statusMessage = err.message
-            response.status(400).end()
-        })
+        .catch(err => next(err))
 })
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
+  if (error.name === 'CastError' || error.name === 'ValidationError') {
+    return response.status(400).send({ error: error.name, message: error.message })
   } 
 
   next(error)
