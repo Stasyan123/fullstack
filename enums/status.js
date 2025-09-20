@@ -1,1 +1,1 @@
-module.exports =  statuses = ['toDo', "inProgress", "finished", "longTerm", "cancelled"]
+module.exports = ['toDo', 'inProgress', 'finished', 'longTerm', 'cancelled']

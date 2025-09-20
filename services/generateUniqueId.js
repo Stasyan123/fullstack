@@ -1,7 +1,7 @@
-const uuidGenerator = require('uuid');
+const uuidGenerator = require('uuid')
 
 const uuid = () => {
-    return uuidGenerator.v4()
+  return uuidGenerator.v4()
 }
 
-module.exports = uuid;
+module.exports = uuid
