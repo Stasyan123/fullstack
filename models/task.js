@@ -1,5 +1,5 @@
+const mongoose = require('mongoose')
 const statuses = require('../enums/status.js')
-const mongoose = require('../services/mongoDbProvider.js')
 
 const taskScheme = new mongoose.Schema({
   title: {

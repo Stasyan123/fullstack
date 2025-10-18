@@ -27,5 +27,15 @@ export default [
   },
   {
     ignores: ['dist/**']
+  },
+  {
+    overrides: [
+    {
+      files: ["**/tests/**/*.[jt]s", "**/*.test.[jt]s"],
+      env: {
+        "jest": true
+      }
+    }
+  ]
   }
 ]

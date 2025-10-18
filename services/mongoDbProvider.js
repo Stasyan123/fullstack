@@ -1,14 +1,18 @@
 const mongoose = require('mongoose')
+const { MONGODB_URI, DB_PASSWORD } = require('../utils/config.js')
 
-mongoose.set('strictQuery', false)
+const logger = require('../utils/logger.js')
 
-let url = process.env.MONGODB_URI
-url = url.replace('<db_password>', process.env.DB_PASSWORD)
+const initDb = () => {
+  mongoose.set('strictQuery', false)
 
-mongoose.connect(url)
-  .then(() => {
-    console.log('connected to MongoDB')
-  })
-  .catch(error => console.log(error.message))
+  const url = MONGODB_URI.replace('<db_password>', DB_PASSWORD)
 
-module.exports = mongoose
+  mongoose.connect(url)
+    .then(() => {
+      logger.info('connected to MongoDB')
+    })
+    .catch(error => logger.error(error.message))
+}
+
+module.exports = { initDb }
