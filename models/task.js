@@ -17,6 +17,10 @@ const taskScheme = new mongoose.Schema({
     type: String,
     enum: statuses,
     required: true
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }
 })
 

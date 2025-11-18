@@ -1,20 +1,27 @@
 const mongoose = require('mongoose');
+const roles = require('../enums/roles.js')
 
 const userScheme = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true,
+        unique: true
     },
     password: {
         type: String,
         required: true,
         unique: true,
     },
-    notes: [
+    role: {
+        type: String,
+        required: true,
+        enum: Object.values(roles),
+        default: roles.USER
+    },
+    tasks: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Note'
+            ref: 'Task'
         }
     ]
 })

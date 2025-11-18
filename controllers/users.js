@@ -1,26 +1,38 @@
-const tasksRouter = require('express').Router()
+const userRouter = require('express').Router()
 const userModel = require('../models/user')
-const bcrypt = require('bcrypt')
 
-tasksRouter.get('/', async (request, response) => {
-    const users = await userModel.find({}).populate('tasks', { title: 1, description: 1, status: 1 })
+const verifyLogin = require('../middlewares/verifyLogin')
 
-    return response.json(users)
+const hashService = require('../services/hashService')
+const roles = require('../enums/roles')
+
+userRouter.get('/', verifyLogin, async (request, response) => {
+    if (request.auth.user.role !== roles.ADMIN) {
+        const users = await userModel.find({}).populate('tasks', { title: 1, description: 1, status: 1 })
+        return response.json(users)
+    }
+
+    const user = await userModel.findById(request.auth.user.id).populate('tasks', { title: 1, description: 1, status: 1 })
+    return response.json(user)
 })
 
-tasksRouter.post('/', async (request, response) => {
+userRouter.post('/', async (request, response) => {
     const { username, password } = request.body
 
     if (!username || !password) {
         return response.status(400).send('Username and password are required!')
     }
 
-    const saltRounds = 10
-    const passwordHash = await bcrypt.hash(password, saltRounds)
-    
+    const user = await userModel.findOne({username: username})
+
+    if (!user) {
+        return response.status(401).send('Username or password is invalid!')
+    }
+
+    const passwordHash = await hashService.hash(password)
     const savedUser = await userModel.create({ username, password: passwordHash })
     
     response.status(201).json(savedUser)
 })
 
-module.exports = tasksRouter
+module.exports = userRouter
