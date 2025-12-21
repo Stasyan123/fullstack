@@ -17,14 +17,14 @@ router.post('/', async (request, response) => {
         return response.status(401).send('Username or password is invalid!')
     }
 
-    if (hashService.compare(password, user.password)) {
+    if (!hashService.compare(password, user.password)) {
         return response.status(401).send('Username or password is invalid!')
     }
 
     const payload = { username: user.username, id: user._id.toString() }
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' })
 
-    response.status(201).json({ token, username: user.username })
+    response.status(201).json({ token, username: user.username, role: user.role })
 })
 
 module.exports = router 

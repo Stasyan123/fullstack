@@ -25,7 +25,7 @@ userRouter.post('/', async (request, response) => {
 
     const user = await userModel.findOne({username: username})
 
-    if (!user) {
+    if (user) {
         return response.status(401).send('Username or password is invalid!')
     }
 
