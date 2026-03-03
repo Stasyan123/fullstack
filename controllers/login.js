@@ -21,7 +21,7 @@ router.post('/', async (request, response) => {
         return response.status(401).send('Username or password is invalid!')
     }
 
-    const payload = { username: user.username, id: user._id.toString() }
+    const payload = { username: user.username, id: user._id.toString(), role: user.role }
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' })
 
     response.status(201).json({ token, username: user.username, role: user.role })

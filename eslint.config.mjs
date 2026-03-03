@@ -15,6 +15,7 @@ export default [
        '@stylistic': stylistic
     },
     rules: { 
+      'no-undef': 'error',
       '@stylistic/indent': ['error', 2],
       '@stylistic/linebreak-style': ['error', 'unix'],
       '@stylistic/quotes': ['error', 'single'],
@@ -29,13 +30,11 @@ export default [
     ignores: ['dist/**']
   },
   {
-    overrides: [
-    {
-      files: ["**/tests/**/*.[jt]s", "**/*.test.[jt]s"],
-      env: {
-        "jest": true
+    files: ["**/tests/**/*.[jt]s", "**/*.test.[jt]s"],
+    languageOptions: {
+    globals: {
+        ...globals.jest
       }
     }
-  ]
   }
 ]

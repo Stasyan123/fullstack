@@ -16,7 +16,7 @@ beforeEach(async () => {
   await Task.create(helpers.initialTasks)
 })
 
-test('tasks are all returned', async () => {
+test.only('tasks are all returned', async () => {
     await api
         .get('/api/tasks')
         .expect(200)

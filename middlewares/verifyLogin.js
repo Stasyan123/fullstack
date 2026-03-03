@@ -18,13 +18,13 @@ const verifyLogin  = async(request, response, next) => {
     const user = await userModel.findById(verifiedToken.id)
 
     if (!user) {
-        return next(new UnauthorizedAccessError('User soes not exist!'))
+        return next(new UnauthorizedAccessError('User does not exist!'))
     }
 
-    user.id = user._id.toString()
-    request.auth.user = user
+  user.id = user._id.toString()
+  request.auth = { user }
 
-    next();
+  next()
 }
 
 module.exports = verifyLogin

@@ -4,23 +4,25 @@ const Task = require('../models/task')
 const responseService = require('../services/ResponseService')
 const verifyLogin = require('../middlewares/verifyLogin')
 
+const roles = require('../enums/roles')
+
 tasksRouter.use(verifyLogin)
 
 tasksRouter.get('/', async (request, response) => {
   let tasks = []
 
-  if (request.auth.user.role !== roles.ADMIN) {
+  if (request.auth.user.role === roles.ADMIN) {
     tasks = await Task.find({})
-  } else if (request.auth.user.role === roles.USER) {
+  } else {
     tasks = await Task.find({ user: request.auth.user.id })
   }
 
-  response.json(tasks.toJSON())
+  response.json(tasks)
 })
 
 tasksRouter.get('/:id', async (request, response) => {
   const task = await Task.findById(request.params.id)
-  
+
   if (!isUserHasAccessToTask(request.auth.user, task)) {
     return responseService.accessDenied(response)
   }
@@ -32,7 +34,7 @@ tasksRouter.get('/:id', async (request, response) => {
   response.json(task)
 })
 
-tasksRouter.delete('/:id',async (request, response) => {
+tasksRouter.delete('/:id', async (request, response) => {
   const task = await Task.findByIdAndDelete(request.params.id)
 
   if (!isUserHasAccessToTask(request.auth.user, task)) {
@@ -47,7 +49,7 @@ tasksRouter.delete('/:id',async (request, response) => {
 })
 
 tasksRouter.put('/:id', async (request, response) => {
-  const task = await Task.findByIdAndDelete(request.params.id)
+  const task = await Task.findById(request.params.id)
 
   if (!task) {
     return response.status(404).end()
@@ -70,19 +72,14 @@ tasksRouter.put('/:id', async (request, response) => {
   response.json(result)
 })
 
-tasksRouter.post('/', async (request, response, next) => {
+tasksRouter.post('/', async (request, response) => {
   const body = request.body
-  const user = await userModel.findOne({id: request.auth.user.id})
-
-  if (!user) {
-      return next(new UnauthorizedAccessError('User is not exists!'))
-  }
 
   const newTask = new Task({
     title: body.title,
     description: body.description,
     status: body.status || 'toDo',
-    user: user._id
+    user: request.auth.user.id
   })
 
   const task = await newTask.save()
